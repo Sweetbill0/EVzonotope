@@ -19,7 +19,7 @@ assert(cfg.tgrid(1) == 0 && cfg.tgrid(end) == 24, ...
 assert(cfg.Nwin == numel(cfg.tgrid) - 1, ...
     'cfg.Nwin inconsistent with cfg.tgrid.');
 
-rng(cfg.seed);
+rng(cfg.seed, 'twister');
 
 segNames = cfg.seg_names;
 if isstring(segNames)
