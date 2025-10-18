@@ -24,7 +24,7 @@ function testWidthAlongNormalsMatchesProjection(testCase)
 poly = [0 0; 1 0; 1 1; 0 1; 0 0];
 [A, b] = region_to_halfspace(poly);
 M = compute_normals_M(A, b);
-DF = width_along_normals(A, b, M);
+DF = width_along_normals(A, b, M, testCase.TestData.cfg.linprog_opts);
 
 for k = 1:size(M,2)
     dir = M(:,k);
@@ -49,6 +49,8 @@ Gu = build_generators_Gu(ev.Pu, ev.Pd, true);
 [c, beta, report] = fit_zonotope_lp(A, b, Gu, M, DF, cfg.linprog_opts, cfg.norm); %#ok<ASGLU>
 expected_Lz = 2 * abs(M.' * Gu) * beta;
 verifyEqual(testCase, report.Lz, expected_Lz, 'AbsTol', 1e-6);
+expected_Delta = mean(expected_Lz ./ DF);
+verifyEqual(testCase, report.DeltaZ, expected_Delta, 'AbsTol', 1e-6);
 end
 
 function testMinkowskiSumDimensions(testCase)

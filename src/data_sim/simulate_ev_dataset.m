@@ -22,10 +22,18 @@ assert(cfg.Nwin == numel(cfg.tgrid) - 1, ...
 rng(cfg.seed);
 
 segNames = cfg.seg_names;
+if isstring(segNames)
+    segNames = cellstr(segNames);
+elseif iscell(segNames)
+    segNames = cellfun(@char, segNames, 'UniformOutput', false);
+else
+    error('cfg.seg_names must be a string or cell array of segment identifiers.');
+end
 numSeg = numel(segNames);
 weights = zeros(1, numSeg);
 for k = 1:numSeg
-    weights(k) = cfg.seg.(segNames{k}).weight;
+    segKey = segNames{k};
+    weights(k) = cfg.seg.(segKey).weight;
 end
 weights = weights ./ sum(weights);
 segmentIndex = randsample(numSeg, cfg.N_users, true, weights);
@@ -45,8 +53,9 @@ users = repmat(struct( ...
     ), cfg.N_users, 1);
 
 for i = 1:cfg.N_users
-    segName = segNames{segmentIndex(i)};
-    params = cfg.seg.(segName);
+    segKey = segNames{segmentIndex(i)};
+    segName = string(segKey);
+    params = cfg.seg.(segKey);
 
     Cap_max = uniform_range(params.Cap_max_rng);
     Cap_min = params.Cap_min_ratio * Cap_max;
@@ -87,9 +96,9 @@ Nwin = cfg.Nwin;
 
 userIdx = repelem((1:cfg.N_users)', Nwin);
 winIdx = repmat((1:Nwin)', cfg.N_users, 1);
-winStart = repmat(windowStarts, cfg.N_users, 1);
+winStart = repmat(windowStarts, cfg.N_users, 1).';
 winStart = winStart(:);
-winEnd = repmat(windowEnds, cfg.N_users, 1);
+winEnd = repmat(windowEnds, cfg.N_users, 1).';
 winEnd = winEnd(:);
 
 Cap_max_all = kron([users.Cap_max]', ones(Nwin,1));
