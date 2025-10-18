@@ -1,10 +1,23 @@
 function agg = minkowski_sum_zonotopes(zonotopes)
 %MINKOWSKI_SUM_ZONOTOPES Aggregate a list of zonotopes via Minkowski sum.
-%   agg = MINKOWSKI_SUM_ZONOTOPES(zonotopes) returns a struct representing
-%   the Minkowski sum of all zonotopes in the input collection. The input
-%   may be a struct array or a cell array; each element must contain fields
-%   'c', 'G', and 'beta'. The output struct also provides fields 'c', 'G',
-%   and 'beta'.
+%   agg = MINKOWSKI_SUM_ZONOTOPES(zonotopes) returns the Minkowski sum of
+%   all input zonotopes. The input may be a struct array or cell array; each
+%   element must contain fields 'c', 'G', and 'beta'. The output struct uses
+%   the same field names.
+%
+%   Input
+%   -----
+%   zonotopes : Collection (struct array or cell array) of zonotope
+%               descriptors. Each descriptor must include:
+%                 c    - 2-by-1 centre vector
+%                 G    - 2-by-d generator matrix
+%                 beta - d-by-1 non-negative scales
+%
+%   Output
+%   ------
+%   agg : Struct with fields 'c', 'G', and 'beta' representing the summed
+%         zonotope: centres add directly, generators concatenate, and beta
+%         stacks vertically.
 %
 %   Example
 %   -------
